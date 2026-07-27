@@ -9,7 +9,7 @@
       "additionalProperties": false,
       "required": ["source_backend", "marketplace", "search_transition_verified", "visible_state", "login_state", "checked_at"],
       "properties": {
-        "source_backend": {"enum": ["official-ebay-api", "trusted-ebay-mcp", "supported-browser"]},
+        "source_backend": {"enum": ["official-ebay-api", "aialra-shopping-browser", "trusted-ebay-mcp"]},
         "marketplace": {"enum": ["ebay.com", "ebay.ca", "ebay.co.uk", "ebay.de", "ebay.com.au"]},
         "search_transition_verified": {"const": true},
         "visible_state": {"enum": ["results-visible", "no-results-visible"]},

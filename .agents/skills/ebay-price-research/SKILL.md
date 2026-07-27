@@ -62,9 +62,11 @@ description: "用于用户要求搜索 eBay 当前商品、寻找最低价可行
 
 1. 已经连接并获得用户授权的官方 eBay 读取接口
 2. 已经安装、连接、审计并被用户信任的只读 eBay MCP
-3. 受支持浏览器中的 eBay 官方网页
+3. 已安装并加载的 `AIALRA Shopping Browser` 中的 eBay 官方网页
 
-本仓库不会自动安装第三方 MCP，不会索取或保存 eBay 开发者密钥
+本仓库不会自动安装第三方 eBay MCP，不会索取或保存 eBay 开发者密钥
+
+`AIALRA Shopping Browser` 使用独立持久 Chrome 资料，用户直接在可见窗口登录，不导出 Cookie 或存储状态
 
 每次运行只使用预检通过的一个后端，多轮搜索和详情核验不得在中途悄悄换源
 

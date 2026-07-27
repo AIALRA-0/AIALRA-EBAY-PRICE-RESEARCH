@@ -89,7 +89,7 @@ def access() -> dict:
     return {
         "plan": plan(),
         "access": {
-            "source_backend": "supported-browser",
+            "source_backend": "aialra-shopping-browser",
             "marketplace": "ebay.com",
             "search_transition_verified": True,
             "visible_state": "results-visible",
@@ -106,7 +106,7 @@ def card(cid: str, iid: str, rid: str, query: str, title: str, price: str, rank:
         "round_id": rid,
         "query": query,
         "sort_mode": sort,
-        "source_backend": "supported-browser",
+        "source_backend": "aialra-shopping-browser",
         "page_number": 1,
         "result_rank": rank,
         "title": title,
@@ -127,9 +127,9 @@ def rounds(access_payload: dict | None = None) -> dict:
     p = access_payload["plan"]
     queries = p["collection"]["query_variants"]
     round_rows = [
-        {"round_id": "round-1", "query": queries[0], "sort_mode": "best-match", "source_backend": "supported-browser", "page_numbers": [1], "retrieved_at": now_iso(), "result_count": 3},
-        {"round_id": "round-2", "query": queries[1], "sort_mode": "price-plus-shipping-ascending", "source_backend": "supported-browser", "page_numbers": [1], "retrieved_at": now_iso(), "result_count": 2},
-        {"round_id": "round-3", "query": queries[2], "sort_mode": "newly-listed", "source_backend": "supported-browser", "page_numbers": [1], "retrieved_at": now_iso(), "result_count": 2},
+        {"round_id": "round-1", "query": queries[0], "sort_mode": "best-match", "source_backend": "aialra-shopping-browser", "page_numbers": [1], "retrieved_at": now_iso(), "result_count": 3},
+        {"round_id": "round-2", "query": queries[1], "sort_mode": "price-plus-shipping-ascending", "source_backend": "aialra-shopping-browser", "page_numbers": [1], "retrieved_at": now_iso(), "result_count": 2},
+        {"round_id": "round-3", "query": queries[2], "sort_mode": "newly-listed", "source_backend": "aialra-shopping-browser", "page_numbers": [1], "retrieved_at": now_iso(), "result_count": 2},
     ]
     cards = [
         card("c1", "366447553040", "round-1", queries[0], "VITURE The Beast XR Glasses Certified Refurbished", "443.32", 1, "best-match"),
@@ -157,7 +157,7 @@ def offer(item: dict, price: str, *, risk: bool = False, scope: str = "public", 
         "url": item["url"],
         "image_urls": [item["image_url"]],
         "search_backends": item["source_backends"],
-        "detail_backend": "supported-browser",
+        "detail_backend": "aialra-shopping-browser",
         "listing_type": "product",
         "listing_state": "active",
         "buying_formats": formats or ["fixed-price", "best-offer"],
@@ -274,7 +274,10 @@ class EbayDomainTests(unittest.TestCase):
         workflow = json.loads((SKILL / "workflow.yaml").read_text(encoding="utf-8"))
         self.assertLessEqual({node["side_effect"] for node in workflow["execution"]["graph"]["nodes"]}, {"none", "read"})
         routing = workflow["execution"]["graph"]["nodes"][1]["action"]["arguments"]["source_routing"]
-        self.assertEqual(["official-ebay-api", "trusted-ebay-mcp", "supported-browser"], routing["provider_order"])
+        self.assertEqual(
+            ["official-ebay-api", "aialra-shopping-browser", "trusted-ebay-mcp"],
+            routing["provider_order"],
+        )
         nodes = {
             node["id"]: node
             for node in workflow["execution"]["graph"]["nodes"]

@@ -50,26 +50,30 @@
           "id": "preflight-access",
           "input_schema": "schemas/research-plan.schema.json",
           "output_schema": "schemas/access.schema.json",
-          "executor": "browser-dom",
+          "executor": "mcp",
           "action": {
             "name": "ebay.verify-search-access",
             "arguments": {
               "input_source": "node-input",
               "source_routing": {
-                "provider_order": ["official-ebay-api", "trusted-ebay-mcp", "supported-browser"],
+                "provider_order": ["official-ebay-api", "aialra-shopping-browser", "trusted-ebay-mcp"],
                 "official_ebay_api": {
                   "mode": "use-only-when-already-connected-and-authorized",
                   "allowed_operation_classes": ["search-read", "item-read"],
                   "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read"]
                 },
+                "aialra_shopping_browser": {
+                  "mode": "preferred-official-web-when-installed-and-loaded",
+                  "mcp_server": "aialra-shopping-browser",
+                  "skill": "shopping-browser-research",
+                  "required_observation_schema": "schemas/observation.schema.json",
+                  "allowed_operation_classes": ["navigation-read", "search-read", "snapshot-read", "detail-read", "screenshot-read"],
+                  "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read", "content-write"]
+                },
                 "trusted_ebay_mcp": {
-                  "mode": "use-only-when-installed-connected-audited-and-user-trusted",
+                  "mode": "fallback-only-before-first-site-access-when-installed-connected-audited-and-user-trusted",
                   "allowed_operation_classes": ["search-read", "item-read", "seller-read", "shipping-read", "return-read"],
                   "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read"]
-                },
-                "supported_browser": {
-                  "mode": "official-web-fallback",
-                  "reuse_current_login_session": true
                 }
               },
               "allowed_hosts": ["www.ebay.com", "www.ebay.ca", "www.ebay.co.uk", "www.ebay.de", "www.ebay.com.au"],
@@ -79,7 +83,7 @@
               "risk_event_retries": 0,
               "reuse_observation_cache_seconds": 900
             },
-            "instructions": "Choose the first already available and permitted backend; execute the canonical query once and verify that the backend reaches a real eBay result state rather than merely opening the homepage; record whether results or an explicit no-results state is visible; do not change backend after a login challenge, bot challenge, authorization failure or host policy block; do not read credentials, cookies, browser storage or device identifiers"
+            "instructions": "Choose the first already available and permitted backend before any eBay access; when using aialra-shopping-browser validate the external observation with its common observation schema before mapping it to this node schema; execute the canonical query once and verify that the backend reaches a real eBay result state rather than merely opening the homepage; record whether results or an explicit no-results state is visible; do not change backend after a login challenge, bot challenge, authorization failure, rate limit or host policy block; do not read credentials, cookies, browser storage or device identifiers"
           },
           "side_effect": "read",
           "requires_confirmation": false,
@@ -101,7 +105,7 @@
           "id": "collect-search-rounds",
           "input_schema": "schemas/access.schema.json",
           "output_schema": "schemas/round-results.schema.json",
-          "executor": "browser-dom",
+          "executor": "mcp",
           "action": {
             "name": "ebay.collect-multi-round-search",
             "arguments": {
@@ -151,7 +155,7 @@
           "id": "inspect-details",
           "input_schema": "schemas/shortlist.schema.json",
           "output_schema": "schemas/inspection.schema.json",
-          "executor": "browser-dom",
+          "executor": "mcp",
           "action": {
             "name": "ebay.inspect-detail-batch",
             "arguments": {
