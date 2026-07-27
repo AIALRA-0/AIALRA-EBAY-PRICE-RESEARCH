@@ -278,6 +278,24 @@ class EbayDomainTests(unittest.TestCase):
             ["official-ebay-api", "aialra-shopping-browser", "trusted-ebay-mcp"],
             routing["provider_order"],
         )
+        self.assertEqual(
+            {"provider_order", "providers", "selection_policy"},
+            set(routing),
+        )
+        self.assertEqual(
+            "aialra-shopping-browser",
+            routing["providers"]["aialra-shopping-browser"]["identifier"],
+        )
+        self.assertEqual(
+            "current-node-output",
+            routing["providers"]["official-ebay-api"]["evidence_contract"][
+                "node_output_schema"
+            ],
+        )
+        self.assertIn(
+            "policy-blocked",
+            routing["selection_policy"]["hard_stop_kinds"],
+        )
         nodes = {
             node["id"]: node
             for node in workflow["execution"]["graph"]["nodes"]

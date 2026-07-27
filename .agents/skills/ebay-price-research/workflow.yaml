@@ -57,23 +57,46 @@
               "input_source": "node-input",
               "source_routing": {
                 "provider_order": ["official-ebay-api", "aialra-shopping-browser", "trusted-ebay-mcp"],
-                "official_ebay_api": {
-                  "mode": "use-only-when-already-connected-and-authorized",
-                  "allowed_operation_classes": ["search-read", "item-read"],
-                  "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read"]
+                "providers": {
+                  "official-ebay-api": {
+                    "kind": "api",
+                    "identifier": "official-ebay-api",
+                    "availability": "already-authorized",
+                    "allowed_operations": ["search-read", "item-read"],
+                    "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read"],
+                    "evidence_contract": {
+                      "node_output_schema": "current-node-output",
+                      "observation_schema": null
+                    }
+                  },
+                  "aialra-shopping-browser": {
+                    "kind": "mcp",
+                    "identifier": "aialra-shopping-browser",
+                    "availability": "installed-and-loaded",
+                    "allowed_operations": ["browser_navigate", "browser_snapshot", "browser_click", "browser_type", "browser_wait_for", "browser_take_screenshot"],
+                    "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read", "content-write"],
+                    "evidence_contract": {
+                      "node_output_schema": "current-node-output",
+                      "observation_schema": "aialra-shopping-browser/observation-v1"
+                    }
+                  },
+                  "trusted-ebay-mcp": {
+                    "kind": "mcp",
+                    "identifier": "user-trusted-ebay-mcp",
+                    "availability": "installed-connected-and-trusted",
+                    "allowed_operations": ["search-read", "item-read", "seller-read", "shipping-read", "return-read"],
+                    "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read"],
+                    "evidence_contract": {
+                      "node_output_schema": "current-node-output",
+                      "observation_schema": null
+                    }
+                  }
                 },
-                "aialra_shopping_browser": {
-                  "mode": "preferred-official-web-when-installed-and-loaded",
-                  "mcp_server": "aialra-shopping-browser",
-                  "skill": "shopping-browser-research",
-                  "required_observation_schema": "schemas/observation.schema.json",
-                  "allowed_operation_classes": ["navigation-read", "search-read", "snapshot-read", "detail-read", "screenshot-read"],
-                  "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read", "content-write"]
-                },
-                "trusted_ebay_mcp": {
-                  "mode": "fallback-only-before-first-site-access-when-installed-connected-audited-and-user-trusted",
-                  "allowed_operation_classes": ["search-read", "item-read", "seller-read", "shipping-read", "return-read"],
-                  "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read"]
+                "selection_policy": {
+                  "select_before_first_access": true,
+                  "reuse_selected_after_success": true,
+                  "switch_only_when_unavailable_before_access": true,
+                  "hard_stop_kinds": ["user-required", "policy-blocked", "fatal"]
                 }
               },
               "allowed_hosts": ["www.ebay.com", "www.ebay.ca", "www.ebay.co.uk", "www.ebay.de", "www.ebay.com.au"],
