@@ -64,6 +64,8 @@ description: "用于用户要求搜索 eBay 当前商品、寻找最低价可行
 
 候选后端审计见 `references/backend-routing.md`
 
+官方网页真实只读验证见 `references/live-validation.md`
+
 ## 证据和成本
 
 - `A` 表示已经读取当前商品详情，并核验数字商品编号、直接价格、币种和至少一张商品图

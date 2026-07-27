@@ -56,6 +56,8 @@ flowchart TD
 
 拍卖当前价不是最终成交价，因此只作证据展示
 
+官方网页真实只读验证记录位于 `.agents/skills/ebay-price-research/references/live-validation.md`
+
 ## 最重要的文件
 
 | 文件 | 用途 |
