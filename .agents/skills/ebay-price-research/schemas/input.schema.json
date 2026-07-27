@@ -16,6 +16,6 @@
       "maxItems": 3,
       "items": {"enum": ["fixed-price", "best-offer", "auction"]}
     },
-    "detail_limit": {"type": "integer", "minimum": 3, "maximum": 20}
+    "detail_limit": {"type": "integer", "minimum": 3, "maximum": 8}
   }
 }

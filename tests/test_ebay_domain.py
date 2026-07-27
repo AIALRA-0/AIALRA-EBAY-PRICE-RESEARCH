@@ -69,12 +69,17 @@ def plan() -> dict:
             ],
             "sort_modes": ["best-match", "price-plus-shipping-ascending", "newly-listed"],
             "minimum_rounds": 3,
-            "maximum_rounds": 6,
+            "maximum_rounds": 5,
             "pages_per_round": 1,
             "candidate_limit": 80,
             "detail_limit": 6,
             "saturation": {"min_new_unique_per_round": 1, "consecutive_rounds": 2},
-            "pacing": {"maximum_parallel_pages": 2, "minimum_action_interval_seconds": 1.5},
+            "pacing": {
+                "maximum_parallel_pages": 1,
+                "minimum_action_interval_seconds": 3,
+                "risk_event_retries": 0,
+                "reuse_observation_cache_seconds": 900,
+            },
         },
         "assumptions": ["未提供预算"],
     }
@@ -270,6 +275,18 @@ class EbayDomainTests(unittest.TestCase):
         self.assertLessEqual({node["side_effect"] for node in workflow["execution"]["graph"]["nodes"]}, {"none", "read"})
         routing = workflow["execution"]["graph"]["nodes"][1]["action"]["arguments"]["source_routing"]
         self.assertEqual(["official-ebay-api", "trusted-ebay-mcp", "supported-browser"], routing["provider_order"])
+        nodes = {
+            node["id"]: node
+            for node in workflow["execution"]["graph"]["nodes"]
+        }
+        for node_id in ("preflight-access", "collect-search-rounds", "inspect-details"):
+            node = nodes[node_id]
+            arguments = node["action"]["arguments"]
+            self.assertEqual(1, arguments["maximum_parallel_pages"])
+            self.assertGreaterEqual(arguments["minimum_action_interval_seconds"], 3)
+            self.assertEqual(0, arguments["risk_event_retries"])
+            self.assertGreaterEqual(arguments["reuse_observation_cache_seconds"], 900)
+            self.assertEqual(0, node["max_retries"])
         text = (SKILL / "references" / "backend-routing.md").read_text(encoding="utf-8")
         self.assertIn("CooKey-Monster/EbayMcpServer", text)
         self.assertIn("拒绝", text)

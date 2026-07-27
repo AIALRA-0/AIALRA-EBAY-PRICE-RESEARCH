@@ -17,13 +17,13 @@
     "rounds": {
       "type": "array",
       "minItems": 3,
-      "maxItems": 8,
+      "maxItems": 5,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["round_id", "query", "sort_mode", "source_backend", "page_numbers", "retrieved_at", "result_count"],
         "properties": {
-          "round_id": {"type": "string", "pattern": "^round-[1-8]$"},
+          "round_id": {"type": "string", "pattern": "^round-[1-5]$"},
           "query": {"type": "string", "minLength": 2, "maxLength": 200},
           "sort_mode": {"enum": ["best-match", "price-plus-shipping-ascending", "newly-listed"]},
           "source_backend": {"enum": ["official-ebay-api", "trusted-ebay-mcp", "supported-browser"]},
@@ -43,7 +43,7 @@
         "properties": {
           "candidate_id": {"type": "string", "minLength": 1, "maxLength": 120},
           "platform_item_id": {"type": "string", "pattern": "^\\d{9,15}$"},
-          "round_id": {"type": "string", "pattern": "^round-[1-8]$"},
+          "round_id": {"type": "string", "pattern": "^round-[1-5]$"},
           "query": {"type": "string", "minLength": 2, "maxLength": 200},
           "sort_mode": {"enum": ["best-match", "price-plus-shipping-ascending", "newly-listed"]},
           "source_backend": {"enum": ["official-ebay-api", "trusted-ebay-mcp", "supported-browser"]},

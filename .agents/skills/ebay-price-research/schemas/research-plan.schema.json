@@ -43,13 +43,13 @@
       "additionalProperties": false,
       "required": ["query_variants", "sort_modes", "minimum_rounds", "maximum_rounds", "pages_per_round", "candidate_limit", "detail_limit", "saturation", "pacing"],
       "properties": {
-        "query_variants": {"type": "array", "minItems": 3, "maxItems": 8, "items": {"type": "string", "minLength": 2, "maxLength": 200}},
+        "query_variants": {"type": "array", "minItems": 3, "maxItems": 5, "items": {"type": "string", "minLength": 2, "maxLength": 200}},
         "sort_modes": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"enum": ["best-match", "price-plus-shipping-ascending", "newly-listed"]}},
-        "minimum_rounds": {"type": "integer", "minimum": 3, "maximum": 8},
-        "maximum_rounds": {"type": "integer", "minimum": 3, "maximum": 8},
-        "pages_per_round": {"type": "integer", "minimum": 1, "maximum": 3},
-        "candidate_limit": {"type": "integer", "minimum": 20, "maximum": 160},
-        "detail_limit": {"type": "integer", "minimum": 3, "maximum": 20},
+        "minimum_rounds": {"type": "integer", "minimum": 3, "maximum": 5},
+        "maximum_rounds": {"type": "integer", "minimum": 3, "maximum": 5},
+        "pages_per_round": {"const": 1},
+        "candidate_limit": {"type": "integer", "minimum": 20, "maximum": 100},
+        "detail_limit": {"type": "integer", "minimum": 3, "maximum": 8},
         "saturation": {
           "type": "object",
           "additionalProperties": false,
@@ -62,10 +62,12 @@
         "pacing": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["maximum_parallel_pages", "minimum_action_interval_seconds"],
+          "required": ["maximum_parallel_pages", "minimum_action_interval_seconds", "risk_event_retries", "reuse_observation_cache_seconds"],
           "properties": {
-            "maximum_parallel_pages": {"type": "integer", "minimum": 1, "maximum": 2},
-            "minimum_action_interval_seconds": {"type": "number", "minimum": 1.5, "maximum": 10}
+            "maximum_parallel_pages": {"const": 1},
+            "minimum_action_interval_seconds": {"type": "number", "minimum": 3, "maximum": 10},
+            "risk_event_retries": {"const": 0},
+            "reuse_observation_cache_seconds": {"type": "integer", "minimum": 900, "maximum": 3600}
           }
         }
       }
