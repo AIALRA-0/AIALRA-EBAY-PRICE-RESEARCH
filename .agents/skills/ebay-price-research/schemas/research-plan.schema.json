@@ -1,0 +1,75 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_text", "product", "purchase_context", "constraints", "collection", "assumptions"],
+  "properties": {
+    "request_text": {"type": "string", "minLength": 3, "maxLength": 2000},
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_query", "category", "condition", "required_terms", "excluded_terms"],
+      "properties": {
+        "canonical_query": {"type": "string", "minLength": 2, "maxLength": 200},
+        "category": {"type": "string", "minLength": 1, "maxLength": 100},
+        "condition": {"enum": ["new", "open-box", "refurbished", "used", "any"]},
+        "required_terms": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"type": "string", "minLength": 1, "maxLength": 80}},
+        "excluded_terms": {"type": "array", "maxItems": 30, "items": {"type": "string", "minLength": 1, "maxLength": 80}}
+      }
+    },
+    "purchase_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["marketplace", "destination_country", "destination_region", "comparison_currency"],
+      "properties": {
+        "marketplace": {"enum": ["ebay.com", "ebay.ca", "ebay.co.uk", "ebay.de", "ebay.com.au"]},
+        "destination_country": {"type": "string", "minLength": 2, "maxLength": 80},
+        "destination_region": {"type": "string", "minLength": 1, "maxLength": 80},
+        "comparison_currency": {"type": "string", "pattern": "^[A-Z]{3}$"}
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_budget", "allowed_buying_formats", "allow_unknown_shipping", "require_returns"],
+      "properties": {
+        "maximum_budget": {"type": "string", "pattern": "^(unknown|\\d+(?:\\.\\d{1,2})?)$"},
+        "allowed_buying_formats": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"enum": ["fixed-price", "best-offer", "auction"]}},
+        "allow_unknown_shipping": {"type": "boolean"},
+        "require_returns": {"type": "boolean"}
+      }
+    },
+    "collection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["query_variants", "sort_modes", "minimum_rounds", "maximum_rounds", "pages_per_round", "candidate_limit", "detail_limit", "saturation", "pacing"],
+      "properties": {
+        "query_variants": {"type": "array", "minItems": 3, "maxItems": 8, "items": {"type": "string", "minLength": 2, "maxLength": 200}},
+        "sort_modes": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"enum": ["best-match", "price-plus-shipping-ascending", "newly-listed"]}},
+        "minimum_rounds": {"type": "integer", "minimum": 3, "maximum": 8},
+        "maximum_rounds": {"type": "integer", "minimum": 3, "maximum": 8},
+        "pages_per_round": {"type": "integer", "minimum": 1, "maximum": 3},
+        "candidate_limit": {"type": "integer", "minimum": 20, "maximum": 160},
+        "detail_limit": {"type": "integer", "minimum": 3, "maximum": 20},
+        "saturation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min_new_unique_per_round", "consecutive_rounds"],
+          "properties": {
+            "min_new_unique_per_round": {"type": "integer", "minimum": 0, "maximum": 10},
+            "consecutive_rounds": {"const": 2}
+          }
+        },
+        "pacing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maximum_parallel_pages", "minimum_action_interval_seconds"],
+          "properties": {
+            "maximum_parallel_pages": {"type": "integer", "minimum": 1, "maximum": 2},
+            "minimum_action_interval_seconds": {"type": "number", "minimum": 1.5, "maximum": 10}
+          }
+        }
+      }
+    },
+    "assumptions": {"type": "array", "maxItems": 12, "items": {"type": "string", "minLength": 1, "maxLength": 240}}
+  }
+}
