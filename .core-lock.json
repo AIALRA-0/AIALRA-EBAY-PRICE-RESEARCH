@@ -20,7 +20,7 @@
     ".agents/skills/ebay-price-research/scripts/merge_rounds.py": "de8d03739913bd2925399ec1b5508d04835ea29052426cbba7b1aebb38c6f5c9",
     ".agents/skills/ebay-price-research/scripts/promote.py": "a68003a16738141752db61106c8fafee31b001ae9e9ad8466ebe4747d1faa103",
     ".agents/skills/ebay-price-research/scripts/rank_offers.py": "bae753cf149ec08b20245116fa98adb9bf47d27a53554672f2ee4d58f4d42097",
-    ".agents/skills/ebay-price-research/scripts/runner.py": "267962092de29452dcac917b6676f21fe2c346dd0ae0911086990d2ddeefdf8a",
+    ".agents/skills/ebay-price-research/scripts/runner.py": "afd479afcf6d852201109b2906fa4f0039925f06dcba52cb43b3de954ce7483e",
     ".agents/skills/ebay-price-research/scripts/runtime_lib.py": "0dafaa787698c80ff7fb88dac5a88e0be8da086d67ffc7a15276b6f51152cb7d",
     ".agents/skills/ebay-price-research/scripts/validate_access.py": "1251b6b196a4deeea00eb74f3be6af9e0e8627dae1c61a56673fcbdf0683009d",
     ".agents/skills/ebay-price-research/scripts/validate_final.py": "f1c3eaeee460c0addc759c8cb45f1486054b0728fe5f9fac7260249c26dc0ce0",
@@ -34,12 +34,12 @@
     ".pre-commit-config.yaml": "721f006af8f50751b68c7ac00cad81d44cf57cb7296403916eeb17a760f25643",
     "AGENTS.md": "58133a6ca6270fc8311eb8a93618cdd5fcc6e61c9f47d8087e1bf24efa6560f5",
     "SECURITY.md": "4bc7094e02ab078136838c0029ff9ccdb5fbea7c492df5263aecac904f207cff",
-    "VERSION": "79e3f22ca37c7fdf4c29ae3648d6b008c3cb6547260a453409275470919dc674",
+    "VERSION": "511a100eedfb9ea66441e5d506392dba2d8aa290f98c4c544c70ae75ec3c3396",
     "scripts/check_secrets.py": "ac9d3ffc77761524984947c074495fd74120e4f9ecb657d4b37af145703808cc",
     "scripts/install_local.py": "e5ab3d37dcb6e1a4eef8bd28b848326fe4477735e3bb5c56c8e7f8775a946814",
     "scripts/validate.py": "bd6ff45c47651e415f25cd26db712f4da73606f4723e2ff8f8f58077d5f29f5e"
   },
   "format_version": 1,
   "skill_name": "ebay-price-research",
-  "skill_version": "0.3.1"
+  "skill_version": "0.3.2"
 }
