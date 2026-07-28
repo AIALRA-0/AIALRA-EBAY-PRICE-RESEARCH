@@ -46,6 +46,7 @@ def plan() -> dict:
             "canonical_query": "VITURE Beast XR glasses",
             "category": "XR glasses",
             "condition": "any",
+            "identity_phrases": ["VITURE The Beast", "VITURE Beast"],
             "required_terms": ["VITURE", "Beast"],
             "excluded_terms": ["case only", "lens only", "parts only"],
         },
@@ -226,6 +227,22 @@ class EbayDomainTests(unittest.TestCase):
         self.assertEqual(["round-1", "round-2", "round-3"], result["shortlist"][0]["seen_in_rounds"])
         self.assertNotIn("256447553042", {row["platform_item_id"] for row in result["shortlist"]})
 
+    def test_shortlist_requires_complete_identity_and_rejects_case_accessories(self) -> None:
+        payload = rounds()
+        query = payload["rounds"][0]["query"]
+        payload["candidates"].extend([
+            card("wrong-model", "366447599991", "round-1", query, "VITURE Luma Pro XR Glasses", "1.00", 4, "best-match"),
+            card("hard-case", "366447599992", "round-1", query, "VITURE Beast XR hard case", "2.00", 5, "best-match"),
+            card("lens-shade", "366447599993", "round-1", query, "VITURE Beast XR lens shade", "3.00", 6, "best-match"),
+            card("scattered", "366447599994", "round-1", query, "VITURE controller bundle for Beast XR glasses", "4.00", 7, "best-match"),
+        ])
+        payload["rounds"][0]["result_count"] += 4
+        identifiers = {row["platform_item_id"] for row in build_shortlist(payload)["shortlist"]}
+        self.assertNotIn("366447599991", identifiers)
+        self.assertNotIn("366447599992", identifiers)
+        self.assertNotIn("366447599993", identifiers)
+        self.assertNotIn("366447599994", identifiers)
+
     def test_backend_change_and_false_saturation_are_rejected(self) -> None:
         payload = rounds()
         payload["rounds"][1]["source_backend"] = "trusted-ebay-mcp"
@@ -282,6 +299,22 @@ class EbayDomainTests(unittest.TestCase):
             {"provider_order", "providers", "selection_policy"},
             set(routing),
         )
+        browser_operations = routing["providers"]["aialra-shopping-browser"]["allowed_operations"]
+        self.assertIn("browser_network_requests", browser_operations)
+        detail_node = next(
+            node
+            for node in workflow["execution"]["graph"]["nodes"]
+            if node["id"] == "inspect-details"
+        )
+        image_evidence = detail_node["action"]["arguments"]["image_evidence"]
+        self.assertEqual("browser_network_requests", image_evidence["operation"])
+        self.assertTrue(image_evidence["static_resources_only"])
+        self.assertEqual("i.ebayimg.com", image_evidence["allowed_host"])
+        self.assertEqual("/images/", image_evidence["allowed_path_prefix"])
+        self.assertEqual(6, image_evidence["maximum_urls_per_offer"])
+        instructions = detail_node["action"]["instructions"]
+        self.assertIn("filter strictly to i.ebayimg.com", instructions)
+        self.assertIn("do not retain unrelated request URLs", instructions)
         self.assertEqual(
             "aialra-shopping-browser",
             routing["providers"]["aialra-shopping-browser"]["identifier"],

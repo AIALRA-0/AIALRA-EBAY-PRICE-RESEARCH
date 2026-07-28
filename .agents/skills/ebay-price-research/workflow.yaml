@@ -31,7 +31,7 @@
               "maximum_rounds": 5,
               "default_detail_limit": 8
             },
-            "instructions": "Preserve every user-provided field; identify the exact product and requested condition; create three to five distinct query variants covering the exact model, common aliases and specification terms; exclude accessories, empty boxes, parts, repairs and preorders unless the user explicitly requests them; use at least two supported sort modes; default to fixed-price and best-offer while keeping auction observations out of final purchase-total conclusions; set pacing to one page at a time, at least three seconds between automatic actions, zero retries after any risk event and a fifteen-minute observation cache; set bounded read-only collection limits; never add a precise address or postal code"
+            "instructions": "Preserve every user-provided field; identify the exact product and requested condition; set identity_phrases to one to five short continuous title phrases covering exact-model spelling variants, and set required_terms to atomic identity checks that must all be present; create three to five distinct query variants covering the exact model, common aliases and specification terms; exclude accessories, empty boxes, parts, repairs and preorders unless the user explicitly requests them; use at least two supported sort modes; default to fixed-price and best-offer while keeping auction observations out of final purchase-total conclusions; set pacing to one page at a time, at least three seconds between automatic actions, zero retries after any risk event and a fifteen-minute observation cache; set bounded read-only collection limits; never add a precise address or postal code"
           },
           "side_effect": "none",
           "requires_confirmation": false,
@@ -73,7 +73,7 @@
                     "kind": "mcp",
                     "identifier": "aialra-shopping-browser",
                     "availability": "installed-and-loaded",
-                    "allowed_operations": ["browser_navigate", "browser_snapshot", "browser_click", "browser_type", "browser_wait_for", "browser_take_screenshot"],
+                    "allowed_operations": ["browser_navigate", "browser_snapshot", "browser_click", "browser_type", "browser_wait_for", "browser_take_screenshot", "browser_network_requests"],
                     "prohibited_operation_classes": ["account-write", "selling", "buying", "credential-read", "content-write"],
                     "evidence_contract": {
                       "node_output_schema": "current-node-output",
@@ -191,9 +191,16 @@
               "reuse_observation_cache_seconds": 900,
               "maximum_details": 8,
               "maximum_review_inspections": 4,
-              "maximum_images_per_offer": 6
+              "maximum_images_per_offer": 6,
+              "image_evidence": {
+                "operation": "browser_network_requests",
+                "static_resources_only": true,
+                "allowed_host": "i.ebayimg.com",
+                "allowed_path_prefix": "/images/",
+                "maximum_urls_per_offer": 6
+              }
             },
-            "instructions": "When the shortlist is empty return empty coverage without opening pages; otherwise reuse only the backend proven by preflight and inspect shortlisted items sequentially in the same page; wait at least three seconds between automatic actions; reuse current-run detail observations; capture active state, complete-product classification, exact condition, selected variant, availability, fixed-price and auction formats, direct price, shipping, import charges, tax, verified discount, currency, price scope, seller feedback, top-rated status, returns, warranty, item images, product review signals, sold or available quantity and contradictions; preserve round provenance; normalize URLs to the numeric eBay item URL; treat a current auction bid as evidence only and never as a final purchase total; never click Buy It Now, Place bid, Make offer, Watchlist, Contact seller or any account-writing control"
+            "instructions": "When the shortlist is empty return empty coverage without opening pages; otherwise reuse only the backend proven by preflight and inspect shortlisted items sequentially in the same page; wait at least three seconds between automatic actions; reuse current-run detail observations; capture active state, complete-product classification, exact condition, selected variant, availability, fixed-price and auction formats, direct price, shipping, import charges, tax, verified discount, currency, price scope, seller feedback, top-rated status, returns, warranty, item images, product review signals, sold or available quantity and contradictions; when visible snapshots do not expose direct item image URLs use browser_network_requests once after the detail page is stable, request static resources only, filter strictly to i.ebayimg.com paths beginning with /images/ and retain no more than six direct image URLs for the current offer; do not retain unrelated request URLs, headers, bodies or parameters; preserve round provenance; normalize URLs to the numeric eBay item URL; treat a current auction bid as evidence only and never as a final purchase total; never click Buy It Now, Place bid, Make offer, Watchlist, Contact seller or any account-writing control"
           },
           "side_effect": "read",
           "requires_confirmation": false,
