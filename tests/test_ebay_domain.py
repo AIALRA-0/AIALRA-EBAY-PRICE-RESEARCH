@@ -115,7 +115,7 @@ def card(cid: str, iid: str, rid: str, query: str, title: str, price: str, rank:
         "currency": "USD",
         "buying_formats": ["fixed-price", "best-offer"],
         "condition_summary": "Certified Refurbished",
-        "seller_name": f"seller-{iid}",
+        "seller_name": f"account-{iid}",
         "shipping_text": "Free shipping",
         "image_url": "https://i.ebayimg.com/images/g/example/s-l1600.webp",
         "url": f"https://www.ebay.com/itm/example-title/{iid}?hash=tracking",
@@ -266,6 +266,12 @@ class EbayDomainTests(unittest.TestCase):
         result = ranked_output(data)
         self.assertEqual(offers[0]["offer_id"], result["recommendation"]["winner_id"])
         self.assertEqual([], validate_final(result))
+
+    def test_a_level_rejects_seller_ui_label(self) -> None:
+        shortlist = build_shortlist(rounds())
+        invalid = offer(shortlist["shortlist"][0], "443.32")
+        invalid["seller"]["name"] = "Seller's other items"
+        self.assertTrue(validate_inspection(shortlist, inspection(shortlist, [invalid])))
 
     def test_auction_and_mixed_currency_cannot_win(self) -> None:
         shortlist = build_shortlist(rounds())

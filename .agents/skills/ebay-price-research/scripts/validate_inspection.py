@@ -5,11 +5,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
 
 from domain_lib import canonical_item_url, parse_money, require_list, require_object, time_is_fresh
+
+
+INVALID_SELLER_LABEL_RE = re.compile(
+    r"^(?:unknown|seller|seller'?s other items|message seller|visit store)\b",
+    re.IGNORECASE,
+)
 
 
 def validate(shortlist: dict[str, Any], inspection: dict[str, Any]) -> list[str]:
@@ -56,6 +63,11 @@ def validate(shortlist: dict[str, Any], inspection: dict[str, Any]) -> list[str]
                 errors.append(f"A-level evidence requires a currency: {identifier}")
             if not offer.get("image_urls"):
                 errors.append(f"A-level evidence requires at least one direct image: {identifier}")
+            seller_name = str(offer.get("seller", {}).get("name", "")).strip()
+            if not seller_name or INVALID_SELLER_LABEL_RE.search(seller_name):
+                errors.append(
+                    f"A-level evidence requires the public seller account name, not a UI label: {identifier}"
+                )
         if offer.get("discount_verified") and parse_money(offer.get("discount")) is None:
             errors.append(f"verified discount requires a numeric amount: {identifier}")
         if offer.get("reviews", {}).get("inspected"):
